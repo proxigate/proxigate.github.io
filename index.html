@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProxiGate — Proximity-Based PC Lock/Unlock</title>
+  <meta name="description" content="Automatic proximity-based Windows PC lock and unlock. BLE + USB dongle.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ProxiGate — Walk up. Unlock. Walk away. Locked.">
+  <meta property="og:description" content="Automatic proximity-based Windows PC lock and unlock using BLE and a tiny USB dongle.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://proxigate.com">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
+
+  <!-- ============================================================ -->
+  <!-- HEADER -->
+  <!-- ============================================================ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 text-xl font-bold tracking-tight">
+          <svg class="w-7 h-7 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <circle cx="12" cy="16" r="1"/>
+          </svg>
+          <span>Proxi<span class="text-cyan-400">Gate</span></span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="#how-it-works" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors">How it Works</a>
+          <a href="#features" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors">Features</a>
+          <a href="#security" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors">Security</a>
+          <a href="#specs" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors">Specs</a>
+          <a href="https://github.com/proxigate" target="_blank" rel="noopener noreferrer" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="/ko/" class="text-xs text-slate-500 hover:text-cyan-400 transition-colors border border-slate-700 rounded px-2 py-1">KO</a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-300 hover:text-cyan-400 transition-colors" aria-label="Toggle menu">
+          <svg id="menu-icon-open" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <svg id="menu-icon-close" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-md border-t border-slate-800">
+      <nav class="flex flex-col px-4 py-4 gap-3">
+        <a href="#how-it-works" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors py-2">How it Works</a>
+        <a href="#features" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors py-2">Features</a>
+        <a href="#security" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors py-2">Security</a>
+        <a href="#specs" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors py-2">Specs</a>
+        <a href="https://github.com/proxigate" target="_blank" rel="noopener noreferrer" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors py-2 flex items-center gap-1">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="/ko/" class="text-xs text-slate-500 hover:text-cyan-400 transition-colors py-2">한국어</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- HERO -->
+  <!-- ============================================================ -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background gradient -->
+    <div class="hero-bg absolute inset-0"></div>
+    <!-- Grid pattern overlay -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgxNDgsIDE2MywgMTg0LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <!-- Glow ring -->
+      <div class="hero-glow mx-auto mb-8 w-24 h-24 rounded-full flex items-center justify-center">
+        <svg class="w-12 h-12 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          <circle cx="12" cy="16" r="1"/>
+        </svg>
+      </div>
+
+      <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4">
+        Proxi<span class="text-cyan-400">Gate</span>
+      </h1>
+      <p class="text-xl sm:text-2xl md:text-3xl font-light text-slate-300 mb-4">
+        Walk up. Unlock. Walk away. <span class="text-rose-400">Locked.</span>
+      </p>
+      <p class="text-base sm:text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
+        Your phone + a tiny USB dongle = automatic Windows PC security.<br>Zero effort.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#how-it-works" class="inline-flex items-center gap-2 px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold rounded-lg transition-colors">
+          Learn More
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="https://github.com/proxigate" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-3 border border-slate-600 hover:border-cyan-500 text-slate-200 hover:text-cyan-400 font-semibold rounded-lg transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- PROBLEM -->
+  <!-- ============================================================ -->
+  <section id="problem" class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">The Problem</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Every day, countless PCs are left unlocked — an open invitation to data theft and unauthorized access.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Manual Locking? Forgotten.</h3>
+          <p class="text-sm text-slate-400">Pressing Win+L every time you leave your desk? Sooner or later, you'll forget. Everyone does.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0z"/><path d="M12 17h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Unlocked = Exposed</h3>
+          <p class="text-sm text-slate-400">An unattended, unlocked workstation is a security breach waiting to happen. Data loss, compliance violations, insider threats.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Existing Solutions Fall Short</h3>
+          <p class="text-sm text-slate-400">Native Bluetooth pairing is unreliable. Screen timeout is too slow. Smart cards still require manual action.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- HOW IT WORKS -->
+  <!-- ============================================================ -->
+  <section id="how-it-works" class="py-20 sm:py-28 bg-slate-900/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">How it Works</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Three simple components. One seamless experience. Your phone is the key.</p>
+      </div>
+
+      <!-- Steps -->
+      <div class="flex flex-col md:flex-row items-center md:items-start justify-center gap-8 md:gap-0">
+        <!-- Step 1 -->
+        <div class="reveal text-center md:flex-1">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/20 flex items-center justify-center">
+            <svg class="w-10 h-10 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">Step 1</div>
+          <h3 class="text-lg font-semibold mb-2">Smartphone</h3>
+          <p class="text-sm text-slate-400 max-w-xs mx-auto">The Android app on your phone handles BLE advertising, authentication, and secure pairing.</p>
+        </div>
+
+        <!-- Pipeline 1 -->
+        <div class="hidden md:flex items-center shrink-0 mt-8">
+          <div class="pipeline-h"></div>
+        </div>
+        <div class="md:hidden flex justify-center">
+          <div class="pipeline-v"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="reveal text-center md:flex-1">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/20 flex items-center justify-center">
+            <svg class="w-10 h-10 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7V4"/><circle cx="12" cy="12" r="1.5"/>
+            </svg>
+          </div>
+          <div class="text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">Step 2</div>
+          <h3 class="text-lg font-semibold mb-2">USB Dongle</h3>
+          <p class="text-sm text-slate-400 max-w-xs mx-auto">A tiny BLE-enabled dongle plugs into your PC's USB port and bridges your phone to Windows.</p>
+        </div>
+
+        <!-- Pipeline 2 -->
+        <div class="hidden md:flex items-center shrink-0 mt-8">
+          <div class="pipeline-h delayed"></div>
+        </div>
+        <div class="md:hidden flex justify-center">
+          <div class="pipeline-v delayed"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="reveal text-center md:flex-1">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/20 flex items-center justify-center">
+            <svg class="w-10 h-10 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div class="text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">Step 3</div>
+          <h3 class="text-lg font-semibold mb-2">Windows PC</h3>
+          <p class="text-sm text-slate-400 max-w-xs mx-auto">A background service and native Credential Provider handle lock/unlock at the OS level.</p>
+        </div>
+      </div>
+
+      <!-- Flow summary -->
+      <div class="reveal mt-16 text-center">
+        <div class="inline-flex items-center gap-3 px-6 py-3 bg-slate-800/50 rounded-full border border-slate-700 text-sm text-slate-300">
+          <span class="text-emerald-400 font-semibold">Near</span>
+          <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Auto Unlock</span>
+          <span class="mx-2 text-slate-600">|</span>
+          <span class="text-rose-400 font-semibold">Away</span>
+          <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Auto Lock</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SCENARIO -->
+  <!-- ============================================================ -->
+  <section id="scenario" class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">In Action</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Approach with your phone, authenticate with fingerprint, and your PC unlocks. Walk away and it locks automatically.</p>
+      </div>
+
+      <div class="reveal flex justify-center">
+        <video class="rounded-xl border border-slate-800 w-full max-w-2xl" autoplay loop muted playsinline>
+          <source src="assets/video/demo.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- FEATURES -->
+  <!-- ============================================================ -->
+  <section id="features" class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Features</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Security and convenience, without compromise.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z" opacity="0.3" fill="currentColor"/><circle cx="12" cy="12" r="3"/>
+              <path d="M2 12h3m14 0h3M12 2v3m0 14v3"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">Proximity Auto Lock/Unlock</h3>
+          <p class="text-sm text-slate-400">Automatically locks when you walk away and unlocks when you return. Hands-free, seamless.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2-2 4-2 4"/><path d="M6 11c0-1.1.9-2 2-2s2 .9 2 2-2 4-2 4"/><path d="M2 16s1-2 3-2 3 2 3 2"/><path d="M16 16s1-2 3-2 3 2 3 2"/><path d="M9 16s1-2 3-2 3 2 3 2"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">Biometric Authentication</h3>
+          <p class="text-sm text-slate-400">Use your phone's fingerprint sensor as a second factor. Your biometrics never leave the device.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">One-Touch Manual Control</h3>
+          <p class="text-sm text-slate-400">Lock or unlock your PC with a single tap in the app. Quick and intentional when you need it.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">Auto-Lock on Disconnect</h3>
+          <p class="text-sm text-slate-400">If BLE connection drops unexpectedly, your PC locks immediately. No gap in protection.</p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">Windows Login Integration</h3>
+          <p class="text-sm text-slate-400">Native Credential Provider integration. Works with the Windows lock screen — no workarounds.</p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="reveal bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold mb-1">Multi-Device Support</h3>
+          <p class="text-sm text-slate-400">Register multiple phones as keys. Pair one dongle with multiple authorized devices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- COMPONENTS -->
+  <!-- ============================================================ -->
+  <section id="components" class="py-20 sm:py-28 bg-slate-900/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Architecture</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Three components that work together as one system.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- USB Dongle -->
+        <div class="reveal bg-slate-900/70 border border-slate-800 rounded-xl overflow-hidden">
+          <div class="h-2 bg-gradient-to-r from-cyan-500 to-cyan-400"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7V4"/><circle cx="12" cy="12" r="1.5"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold">USB Dongle</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-4">The bridge between your phone and PC. Plugs into USB, communicates via BLE.</p>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                Dedicated MCU
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                Arm TrustZone security
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                USB HID interface
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                BLE 5.2+ radio
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Windows Software -->
+        <div class="reveal bg-slate-900/70 border border-slate-800 rounded-xl overflow-hidden">
+          <div class="h-2 bg-gradient-to-r from-cyan-400 to-emerald-400"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold">Windows Software</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-4">Background service and credential provider that manage your PC's lock state.</p>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Background Service
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Native Login Module
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Management App
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Windows 10/11 support
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Android App -->
+        <div class="reveal bg-slate-900/70 border border-slate-800 rounded-xl overflow-hidden">
+          <div class="h-2 bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold">Android App</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-4">Your phone becomes the key. Manage devices, authenticate, and control your PC.</p>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Native Android
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                BLE connectivity
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Biometric authentication
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Android 12+ required
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECURITY -->
+  <!-- ============================================================ -->
+  <section id="security" class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Security First</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">A lock is only as strong as its weakest link. ProxiGate is built with defense in depth.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Sec 1 -->
+        <div class="reveal flex gap-4 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+          <div class="w-10 h-10 shrink-0 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-1">BLE Encryption</h3>
+            <p class="text-sm text-slate-400">All BLE communication is encrypted. Custom protocol with CRC16 integrity checks on every packet.</p>
+          </div>
+        </div>
+
+        <!-- Sec 2 -->
+        <div class="reveal flex gap-4 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+          <div class="w-10 h-10 shrink-0 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-1">Challenge-Response Auth</h3>
+            <p class="text-sm text-slate-400">Every unlock request requires a cryptographic challenge-response exchange. No static tokens.</p>
+          </div>
+        </div>
+
+        <!-- Sec 3 -->
+        <div class="reveal flex gap-4 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+          <div class="w-10 h-10 shrink-0 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-1">Device Binding</h3>
+            <p class="text-sm text-slate-400">Each phone is cryptographically bound to the dongle during pairing. Unauthorized devices are rejected.</p>
+          </div>
+        </div>
+
+        <!-- Sec 4 -->
+        <div class="reveal flex gap-4 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+          <div class="w-10 h-10 shrink-0 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-1">Nonce &amp; Timestamp</h3>
+            <p class="text-sm text-slate-400">Every command includes a nonce and timestamp to prevent replay attacks. Each message is unique.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TECH SPECS -->
+  <!-- ============================================================ -->
+  <section id="specs" class="py-20 sm:py-28 bg-slate-900/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Technical Specifications</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">For developers and contributors.</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-3 reveal">
+        <!-- Spec 1 -->
+        <div class="spec-toggle bg-slate-900/70 border border-slate-800 rounded-lg overflow-hidden">
+          <button class="spec-btn w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors" data-target="spec-os">
+            <span class="font-medium">Supported Operating Systems</span>
+            <svg class="spec-chevron w-5 h-5 text-slate-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="spec-os" class="spec-content hidden px-4 pb-4">
+            <div class="border-t border-slate-800 pt-4 text-sm text-slate-400 space-y-1">
+              <p>Windows 10 (version 1903+)</p>
+              <p>Windows 11 (all versions)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec 2 -->
+        <div class="spec-toggle bg-slate-900/70 border border-slate-800 rounded-lg overflow-hidden">
+          <button class="spec-btn w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors" data-target="spec-ble">
+            <span class="font-medium">Bluetooth / BLE</span>
+            <svg class="spec-chevron w-5 h-5 text-slate-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="spec-ble" class="spec-content hidden px-4 pb-4">
+            <div class="border-t border-slate-800 pt-4 text-sm text-slate-400 space-y-1">
+              <p>Bluetooth Low Energy 5.2+</p>
+              <p>Custom GATT service (128-bit UUIDs)</p>
+              <p>Encrypted connection with bonding</p>
+              <p>Range: ~10m (configurable threshold)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec 3 -->
+        <div class="spec-toggle bg-slate-900/70 border border-slate-800 rounded-lg overflow-hidden">
+          <button class="spec-btn w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors" data-target="spec-usb">
+            <span class="font-medium">USB Interface</span>
+            <svg class="spec-chevron w-5 h-5 text-slate-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="spec-usb" class="spec-content hidden px-4 pb-4">
+            <div class="border-t border-slate-800 pt-4 text-sm text-slate-400 space-y-1">
+              <p>USB HID (driverless on Windows)</p>
+              <p>USB 2.0 Full Speed</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec 4 -->
+        <div class="spec-toggle bg-slate-900/70 border border-slate-800 rounded-lg overflow-hidden">
+          <button class="spec-btn w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors" data-target="spec-hw">
+            <span class="font-medium">Hardware</span>
+            <svg class="spec-chevron w-5 h-5 text-slate-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="spec-hw" class="spec-content hidden px-4 pb-4">
+            <div class="border-t border-slate-800 pt-4 text-sm text-slate-400 space-y-1">
+              <p>Dedicated MCU</p>
+              <p>Arm TrustZone hardware security</p>
+              <p>BLE 5.4 integrated</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec 5 -->
+        <div class="spec-toggle bg-slate-900/70 border border-slate-800 rounded-lg overflow-hidden">
+          <button class="spec-btn w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors" data-target="spec-mobile">
+            <span class="font-medium">Mobile App</span>
+            <svg class="spec-chevron w-5 h-5 text-slate-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="spec-mobile" class="spec-content hidden px-4 pb-4">
+            <div class="border-t border-slate-800 pt-4 text-sm text-slate-400 space-y-1">
+              <p>Android 12+ (API 31+)</p>
+              <p>Native Android</p>
+              <p>BLE connectivity</p>
+              <p>Biometric authentication</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================================ -->
+  <footer class="py-12 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-sm text-slate-400">
+          <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/>
+          </svg>
+          <span>&copy; 2026 ProxiGate</span>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <a href="mailto:proxigate.com@gmail.com" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors">proxigate.com@gmail.com</a>
+          <a href="https://github.com/proxigate" target="_blank" rel="noopener noreferrer" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

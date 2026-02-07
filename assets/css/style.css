@@ -1,0 +1,186 @@
+/**
+ * ProxiGate - Custom Styles
+ * Gradients, animations, and styles beyond Tailwind CDN
+ */
+
+/* ── Header ──────────────────────────────────────────────────── */
+#header {
+  background: transparent;
+}
+
+#header.header-scrolled {
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* ── Hero Background ─────────────────────────────────────────── */
+.hero-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
+}
+
+/* ── Hero Glow Ring ──────────────────────────────────────────── */
+.hero-glow {
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  box-shadow:
+    0 0 40px rgba(6, 182, 212, 0.1),
+    0 0 80px rgba(6, 182, 212, 0.05);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 40px rgba(6, 182, 212, 0.1),
+      0 0 80px rgba(6, 182, 212, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 60px rgba(6, 182, 212, 0.15),
+      0 0 120px rgba(6, 182, 212, 0.08);
+  }
+}
+
+/* ── Scroll Reveal ───────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children in grids */
+.grid > .reveal:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.grid > .reveal:nth-child(3) {
+  transition-delay: 0.2s;
+}
+.grid > .reveal:nth-child(4) {
+  transition-delay: 0.15s;
+}
+.grid > .reveal:nth-child(5) {
+  transition-delay: 0.25s;
+}
+.grid > .reveal:nth-child(6) {
+  transition-delay: 0.3s;
+}
+
+/* ── Data Pipeline ───────────────────────────────────────────── */
+.pipeline {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Horizontal pipe (desktop) */
+.pipeline-h {
+  width: 80px;
+  height: 2px;
+  background: rgba(6, 182, 212, 0.12);
+  border-radius: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pipeline-h::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.8), transparent);
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.5);
+  animation: flow-h 4s linear infinite;
+}
+
+.pipeline-h.delayed::before {
+  animation-delay: 2s;
+}
+
+@keyframes flow-h {
+  0% { left: -24px; }
+  50% { left: calc(100% + 24px); }
+  51% { left: -24px; }
+  100% { left: -24px; }
+}
+
+/* Vertical pipe (mobile) */
+.pipeline-v {
+  width: 2px;
+  height: 40px;
+  background: rgba(6, 182, 212, 0.12);
+  border-radius: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pipeline-v::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent, rgba(6, 182, 212, 0.8), transparent);
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.5);
+  animation: flow-v 4s linear infinite;
+}
+
+.pipeline-v.delayed::before {
+  animation-delay: 2s;
+}
+
+@keyframes flow-v {
+  0% { top: -16px; }
+  50% { top: calc(100% + 16px); }
+  51% { top: -16px; }
+  100% { top: -16px; }
+}
+
+/* ── Spec Toggle Chevron ─────────────────────────────────────── */
+.spec-chevron.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* ── Smooth Scroll ───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset for fixed header */
+:target {
+  scroll-margin-top: 5rem;
+}
+
+/* ── Selection Color ─────────────────────────────────────────── */
+::selection {
+  background: rgba(6, 182, 212, 0.3);
+  color: #f1f5f9;
+}
+
+/* ── Scrollbar (Webkit) ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
