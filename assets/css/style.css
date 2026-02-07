@@ -107,10 +107,10 @@
 }
 
 @keyframes flow-h {
-  0% { left: -24px; }
-  50% { left: calc(100% + 24px); }
-  51% { left: -24px; }
-  100% { left: -24px; }
+  0% { left: -24px; opacity: 1; }
+  49.9% { left: calc(100% + 24px); opacity: 1; }
+  50% { left: -24px; opacity: 0; }
+  100% { left: -24px; opacity: 0; }
 }
 
 /* Vertical pipe (mobile) */
@@ -140,10 +140,10 @@
 }
 
 @keyframes flow-v {
-  0% { top: -16px; }
-  50% { top: calc(100% + 16px); }
-  51% { top: -16px; }
-  100% { top: -16px; }
+  0% { top: -16px; opacity: 1; }
+  49.9% { top: calc(100% + 16px); opacity: 1; }
+  50% { top: -16px; opacity: 0; }
+  100% { top: -16px; opacity: 0; }
 }
 
 /* ── Spec Toggle Chevron ─────────────────────────────────────── */
